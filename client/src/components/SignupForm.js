@@ -39,7 +39,7 @@ const SignupForm = () => {
     }
 
     try {
-      const { data } = await createUser({
+      const { data } = await addUser({
         variables: { ...userFormData }
       });
 
@@ -47,8 +47,6 @@ const SignupForm = () => {
       //   throw new Error('something went wrong!');
       // }
 
-      const { token, user } = await response.json();
-      console.log(user);
       Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);

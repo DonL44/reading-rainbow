@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import React from "react";
+import {
+  Jumbotron,
+  Container,
+  CardColumns,
+  Card,
+  Button,
+} from "react-bootstrap";
 
-import { GET_ME, deleteBook } from '../utils/queries';
-import Auth from '../utils/auth';
-import { removeBookId } from '../utils/localStorage';
+import Auth from "../utils/auth";
+import { removeBookId } from "../utils/localStorage";
+
+import { useQuery, useMutation } from "@apollo/client";
+import { QUERY_ME } from "../utils/queries";
 import { REMOVE_BOOK } from "../utils/mutations";
 
 const SavedBooks = () => {
-  const { loading, data } = useQuery(GET_ME);
+  const { data: userData } = useQuery(QUERY_ME);
   const [deleteBook] = useMutation(REMOVE_BOOK);
-  const userData = data?.me || {};
-
-  if(!userData?.username) {
-    return (
-      <h4>
-        You need to be logged in to see this page. Use the navigation links above to sign up or log in!
-      </h4>
-    );
-  }
-
   // use this to determine if `useEffect()` hook needs to run again
   // const userDataLength = Object.keys(userData).length;
 
@@ -60,12 +57,12 @@ const SavedBooks = () => {
       await deleteBook({
         variables: {bookId: bookId},
         update: cache => {
-          const data = cache.readQuery({ query: GET_ME });
+          const data = cache.readQuery({ query: QUERY_ME });
           const userDataCache = data.me;
           const savedBooksCache = userDataCache.savedBooks;
           const updatedBookCache = savedBooksCache.filter((book) => book.bookId !== bookId);
           data.me.savedBooks = updatedBookCache;
-          cache.writeQuery({ query: GET_ME , data: {data: {...data.me.savedBooks}}})
+          cache.writeQuery({ query: QUERY_ME , data: {data: {...data.me.savedBooks}}})
         }
       });
       
@@ -77,7 +74,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (!userData) {
     return <h2>LOADING...</h2>;
   }
 

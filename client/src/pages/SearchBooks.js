@@ -6,7 +6,7 @@ import { saveBook, searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 import { useMutation } from '@apollo/react-hooks';
 import {SAVE_BOOK} from '../utils/mutations';
-import { GET_ME } from '../utils/queries';
+import { QUERY_ME } from '../utils/queries';
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -74,8 +74,8 @@ const SearchBooks = () => {
       const { data } = await saveBook({
         variables: {book: bookToSave},
         update: cache => {
-          const {me} = cache.readQuery({ query: GET_ME });
-          cache.writeQuery({ query: GET_ME , data: {me: { ...me, savedBooks: [...me.savedBooks, bookToSave] } } })
+          const {me} = cache.readQuery({ query: QUERY_ME });
+          cache.writeQuery({ query: QUERY_ME , data: {me: { ...me, savedBooks: [...me.savedBooks, bookToSave] } } })
         }
       });
 
