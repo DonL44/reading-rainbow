@@ -16,6 +16,7 @@ import { REMOVE_BOOK } from "../utils/mutations";
 
 const SavedBooks = () => {
   const { data: userData } = useQuery(QUERY_ME);
+<<<<<<< HEAD
   const [deleteBook] = useMutation(REMOVE_BOOK);
   // use this to determine if `useEffect()` hook needs to run again
   // const userDataLength = Object.keys(userData).length;
@@ -44,6 +45,9 @@ const SavedBooks = () => {
 
   //   getUserData();
   // }, [userDataLength]);
+=======
+  const [deleteBook, { error }] = useMutation(REMOVE_BOOK);
+>>>>>>> main
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
@@ -54,6 +58,7 @@ const SavedBooks = () => {
     }
 
     try {
+<<<<<<< HEAD
       await deleteBook({
         variables: {bookId: bookId},
         update: cache => {
@@ -66,6 +71,10 @@ const SavedBooks = () => {
         }
       });
       
+=======
+      await deleteBook({ variables: { bookId } });
+
+>>>>>>> main
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
@@ -80,30 +89,42 @@ const SavedBooks = () => {
 
   return (
     <>
-      <Jumbotron fluid className='text-light bg-dark'>
+      <Jumbotron fluid className="text-light bg-dark">
         <Container>
           <h1>Viewing saved books!</h1>
         </Container>
       </Jumbotron>
       <Container>
         <h2>
-          {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
-            : 'You have no saved books!'}
+          {userData.me.savedBooks.length
+            ? `Viewing ${userData.me.savedBooks.length} saved ${
+                userData.me.savedBooks.length === 1 ? "book" : "books"
+              }:`
+            : "You have no saved books!"}
         </h2>
         <CardColumns>
-          {userData.savedBooks.map((book) => {
+          {userData.me.savedBooks.map((book) => {
             return (
-              <Card key={book.bookId} border='dark'>
-                {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
+              <Card key={book.bookId} border="dark">
+                {book.image ? (
+                  <Card.Img
+                    src={book.image}
+                    alt={`The cover for ${book.title}`}
+                    variant="top"
+                  />
+                ) : null}
                 <Card.Body>
                   <Card.Title>{book.title}</Card.Title>
-                  <p className='small'>Authors: {book.authors}</p>
+                  <p className="small">Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
-                  <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
+                  <Button
+                    className="btn-block btn-danger"
+                    onClick={() => handleDeleteBook(book.bookId)}
+                  >
                     Delete this Book!
                   </Button>
                 </Card.Body>
+                {error && <div>Something went wrong...</div>}
               </Card>
             );
           })}
